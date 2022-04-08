@@ -7,7 +7,7 @@ Simple management of onvif IP-devices cameras. onvif is an implementation of  ON
 To install the library,  use **go get**:
 
 ```go
-go get github.com/sdfightin/onvif
+go get github.com/sdfighting/onvif
 
 ```
 
