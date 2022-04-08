@@ -24,7 +24,7 @@ import (
 const bufSize = 8192
 
 //SendProbe to device
-func SendProbe(interfaceName string, scopes, types []string, namespaces map[string]string) []string {
+func SendProbe(interfaceName string, scopes, types []string, namespaces map[string]string) ([]string,[]net.Addr) {
 	// Creating UUID Version 4
 	uuidV4 := uuid.Must(uuid.NewV4())
 	//fmt.Printf("UUIDv4: %s\n", uuidV4)
@@ -48,7 +48,7 @@ func SendProbe(interfaceName string, scopes, types []string, namespaces map[stri
 
 }
 
-func sendUDPMulticast(msg string, interfaceName string) []string {
+func sendUDPMulticast(msg string, interfaceName string) ([]string,[]net.Addr) {
 	c, err := net.ListenPacket("udp4", "0.0.0.0:1024")
 	if err != nil {
 		fmt.Println(err)
@@ -84,9 +84,10 @@ func sendUDPMulticast(msg string, interfaceName string) []string {
 	}
 
 	var result []string
+	var srcAddr []net.Addr
 	for {
 		b := make([]byte, bufSize)
-		n, _, _, err := p.ReadFrom(b)
+		n, _, src, err := p.ReadFrom(b)
 		if err != nil {
 			if !errors.Is(err, os.ErrDeadlineExceeded) {
 				fmt.Println(err)
@@ -94,6 +95,7 @@ func sendUDPMulticast(msg string, interfaceName string) []string {
 			break
 		}
 		result = append(result, string(b[0:n]))
+		srcAddr = append(srcAddr,src)
 	}
-	return result
+	return result,srcAddr
 }
