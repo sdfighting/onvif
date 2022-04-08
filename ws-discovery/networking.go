@@ -11,8 +11,6 @@ package wsdiscovery
 
 import (
 	"errors"
-	"fmt"
-	"log"
 	"net"
 	"os"
 	"time"
@@ -84,8 +82,6 @@ func sendUDPMulticast(msg string, interfaceName string) ([]string,[]net.Addr) {
 		//log.Fatal(err)
 	}
 
-	var result []string
-	var srcAddr []net.Addr
 	for {
 		b := make([]byte, bufSize)
 		n, _, src, err := p.ReadFrom(b)
